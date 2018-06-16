@@ -1,19 +1,47 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import { Router, Route, Switch } from "react-router-dom";
+import { createBrowserHistory } from "history";
+import ApolloClient, { createNetworkInterface } from "apollo-client";
+import { ApolloProvider } from "react-apollo";
+
+// Routes
+import indexRoutes from "routes";
+
+// CSS
+import "./assets/scss/styles.css";
+
+const hist = createBrowserHistory();
+
+const networkInterface = createNetworkInterface({
+  uri: "/graphql",
+  opts: {
+    credentials: "same-origin"
+  }
+});
+// Setup Apollo Client
+const client = new ApolloClient({
+  networkInterface,
+  dataIdFromObject: o => o.id
+});
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
+      <ApolloProvider client={client}>
+        <Router history={hist}>
+          <Switch>
+            {indexRoutes.map((route, key) => {
+              return (
+                <Route
+                  path={route.path}
+                  key={key}
+                  component={route.component}
+                />
+              );
+            })}
+          </Switch>
+        </Router>
+      </ApolloProvider>
     );
   }
 }
