@@ -1,2 +1,8 @@
 body {
   background-color: grey; }
+
+.t {
+  opacity: 0; }
+
+.c {
+  background-color: transparent; }
